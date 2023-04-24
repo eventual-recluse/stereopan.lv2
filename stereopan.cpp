@@ -157,7 +157,7 @@ void StereoPan::run (const uint32_t sample_count)
 	/* By letting width go to -1.0, we can completely reverse the L and R channels.
          * But if it's below zero we have to reverse its sign in the divisor below      */
         int sign = 1;
-        if (current_width < 0.0f) { sign = - sign; }
+        if (current_width < 0) { sign = - sign; }
 	    
         audio_out_ptr[C_LEFT][i] = (mid + current_width * side) * 2 / (1 + (current_width * sign)) * current_amp;
         audio_out_ptr[C_RIGHT][i] = (mid - current_width * side) * 2 / (1 + (current_width * sign)) * current_amp;
