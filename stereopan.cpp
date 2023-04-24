@@ -128,7 +128,7 @@ void StereoPan::run (const uint32_t sample_count)
     current_balance = current_balance < -1.0f ? -1.0f : current_balance;
     current_balance = current_balance > 1.0f ? 1.0f : current_balance;
 
-    /* increments for parameter smoothing. e.g. *(m->amp_ptr) is our target amp value, to be reached by the end of processing the samples */
+    /* increments for parameter smoothing. e.g. *amp_ptr is our target amp value, to be reached by the end of processing the samples */
     float increment_amp = (*amp_ptr - current_amp) * (1.0 / (double) sample_count);
     float increment_width = (*width_ptr - current_width) * (1.0 / (double) sample_count);
     float increment_balance = (*balance_ptr - current_balance) * (1.0 / (double) sample_count);
