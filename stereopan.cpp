@@ -161,7 +161,8 @@ void StereoPan::run (const uint32_t sample_count)
 	    
         audio_out_ptr[C_LEFT][i] = (mid + current_width * side) * 2 / (1 + (current_width * sign)) * current_amp;
         audio_out_ptr[C_RIGHT][i] = (mid - current_width * side) * 2 / (1 + (current_width * sign) * current_amp;
-        if (current_balance < 0)
+        
+	if (current_balance < 0)
         {
             audio_out_ptr[C_RIGHT][i] *= 1 + current_balance;
         }
