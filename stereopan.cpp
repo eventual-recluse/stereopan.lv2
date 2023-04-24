@@ -14,7 +14,7 @@ enum Channels{
 
 /* LV2 port indexes. Match the port indexes defined in stereopan.ttl  */
 enum Ports{
-	SP_AUDIO_IN_L    = 0,
+    SP_AUDIO_IN_L    = 0,
     SP_AUDIO_IN_R    = 1,
     SP_AUDIO_OUT_L   = 2,
     SP_AUDIO_OUT_R   = 3,
@@ -123,7 +123,7 @@ void StereoPan::run (const uint32_t sample_count)
     /* Ensure parameter values are limited to the intended ranges */
     current_amp = current_amp < 0.0f ? 0.0f : current_amp;
     current_amp = current_amp > 2.0f ? 2.0f : current_amp;
-    current_width = current_width < 0.0f ? 0.0f : current_width;
+    current_width = current_width < -1.0f ? -1.0f : current_width;
     current_width = current_width > 1.0f ? 1.0f : current_width;
     current_balance = current_balance < -1.0f ? -1.0f : current_balance;
     current_balance = current_balance > 1.0f ? 1.0f : current_balance;
@@ -153,8 +153,14 @@ void StereoPan::run (const uint32_t sample_count)
         
         float mid = (audio_in_ptr[C_LEFT][i] + audio_in_ptr[C_RIGHT][i]) / 2;
         float side = (audio_in_ptr[C_LEFT][i] - audio_in_ptr[C_RIGHT][i]) / 2;
-        audio_out_ptr[C_LEFT][i] = (mid + current_width * side) * 2 / (1 + current_width) * current_amp;
-        audio_out_ptr[C_RIGHT][i] = (mid - current_width * side) * 2 / (1 + current_width) * current_amp;
+	
+	/* By letting width go to -1.0, we can completely reverse the L and R channels.
+         * But if it's below zero we have to reverse its sign in the divisor below      */
+        int sign = 1;
+        if (current_width < 0.0f) { sign = - sign; }
+	    
+        audio_out_ptr[C_LEFT][i] = (mid + current_width * side) * 2 / (1 + (current_width * sign)) * current_amp;
+        audio_out_ptr[C_RIGHT][i] = (mid - current_width * side) * 2 / (1 + (current_width * sign) * current_amp;
         if (current_balance < 0)
         {
             audio_out_ptr[C_RIGHT][i] *= 1 + current_balance;
